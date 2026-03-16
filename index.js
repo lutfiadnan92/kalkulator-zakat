@@ -47,6 +47,13 @@ function zakatCalculator() {
 		},
 
 		init() {
+			fetch('DB.json')
+				.then((response) => response.json())
+				.then((data) => {
+					this.tarifFixed = data.standardRate;
+				})
+				.catch((error) => console.error('Gagal memuat config:', error));
+
 			this.$watch('jumlahOrang', (value) => {
 				if (value < 1 && value !== '') {
 					this.jumlahOrang = 1;
