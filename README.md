@@ -2,6 +2,8 @@
 
 Sebuah kalkulator zakat fitrah berbasis web yang sederhana, modern, dan interaktif. Dibuat untuk membantu pengguna menghitung kewajiban zakat fitrah mereka dengan mudah, baik dalam bentuk bahan makanan pokok (beras) maupun dalam bentuk uang tunai (Rupiah).
 
+**🌐 Link Website:** [https://lutfiadnan92.github.io/kalkulator-zakat/](https://lutfiadnan92.github.io/kalkulator-zakat/)
+
 ![Screenshot Kalkulator Zakat](img/kalkulator-zakat.png)
 
 ## ✨ Fitur Utama
