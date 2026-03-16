@@ -2,273 +2,155 @@
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Zakat Fitrah</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator Zakat Fitrah</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body
-    class="bg-emerald-50 min-h-screen font-sans text-gray-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
+  class="bg-emerald-50 min-h-screen font-sans text-gray-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
 
-    <div class="max-w-lg mx-auto pt-12 pb-20 px-4 sm:px-6">
-
-        <!-- Header -->
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 mb-4 shadow-sm">
-                <i data-lucide="scale" class="w-8 h-8 text-emerald-600"></i>
+  <div class="max-w-lg mx-auto pt-12 pb-20 px-4 sm:px-6">
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 mb-4 shadow-sm">
+        <i data-lucide="scale" class="w-8 h-8 text-emerald-600"></i>
+      </div>
+      <h1 class="text-3xl font-bold text-emerald-900 mb-2">Zakat Fitrah</h1>
+      <p class="text-emerald-700 text-sm">Hitung takaran zakat fitrah keluarga Anda dengan mudah.</p>
+    </div>
+    <div x-data="zakatCalculator()" class="bg-white rounded-2xl shadow-xl border border-emerald-100 overflow-hidden">
+      <div class="p-6 sm:p-8 bg-white space-y-6">
+        <div>
+          <label for="jumlahOrang" class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+            <i data-lucide="users" class="w-4 h-4 text-emerald-500"></i>
+            Jumlah Anggota Keluarga (Jiwa)
+          </label>
+          <div class="relative">
+            <button @click="if(jumlahOrang > 1) jumlahOrang--"
+              class="absolute left-0 top-0 bottom-0 px-4 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-l-lg transition-colors border border-r-0 border-gray-300">
+              <i data-lucide="minus" class="w-4 h-4"></i>
+            </button>
+            <input type="number" id="jumlahOrang" x-model.number="jumlahOrang" min="1"
+              class="w-full text-center text-lg font-bold border border-gray-300 rounded-lg py-3 px-12 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none">
+            <button @click="jumlahOrang++"
+              class="absolute right-0 top-0 bottom-0 px-4 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-r-lg transition-colors border border-l-0 border-gray-300">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            <i data-lucide="coins" class="w-4 h-4 text-emerald-500"></i>
+            Metode Konversi Uang Tunai
+          </label>
+          <div class="space-y-3">
+            <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-all"
+              :class="opsiUangTunai === 'fixed' ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200 hover:bg-gray-50'">
+              <input type="radio" x-model="opsiUangTunai" value="fixed"
+                class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 border-gray-300">
+              <span class="text-sm font-medium text-gray-700">Ketetapan Standar (Rp 45.000/jiwa)</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-all"
+              :class="opsiUangTunai === 'manual' ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200 hover:bg-gray-50'">
+              <input type="radio" x-model="opsiUangTunai" value="manual"
+                class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 border-gray-300">
+              <span class="text-sm font-medium text-gray-700">Hitung Manual (Harga Beras Saat Ini)</span>
+            </label>
+          </div>
+          <div x-show="opsiUangTunai === 'manual'" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
+            class="mt-4 flex shadow-sm rounded-lg">
+            <div class="relative flex-grow">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <span class="text-gray-500 font-medium">Rp</span>
+              </div>
+              <input type="number" id="hargaBeras" x-model.number="hargaBeras" min="0" placeholder="Contoh: 15000"
+                class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none">
             </div>
-            <h1 class="text-3xl font-bold text-emerald-900 mb-2">Zakat Fitrah</h1>
-            <p class="text-emerald-700 text-sm">Hitung takaran zakat fitrah keluarga Anda dengan mudah.</p>
+            <select x-model="satuanHarga"
+              class="bg-gray-50 border border-l-0 border-gray-300 text-gray-700 py-3 px-4 rounded-r-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all cursor-pointer">
+              <option value="kg">per Kg</option>
+              <option value="liter">per Liter</option>
+            </select>
+          </div>
+          <p x-show="opsiUangTunai === 'manual'" class="text-xs text-gray-500 mt-2">* Kosongkan jika hanya
+            ingin mengetahui takaran berat/volume.</p>
+        </div>
+      </div>
+      <div class="bg-emerald-50/50 p-6 sm:p-8 border-t border-emerald-100">
+        <h3 class="text-sm font-bold text-emerald-800 uppercase tracking-wider mb-4 flex items-center gap-2">
+          <i data-lucide="clipboard-check" class="w-4 h-4"></i>
+          Total Kewajiban Zakat
+        </h3>
+        <div class="space-y-4">
+          <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-emerald-100/50">
+            <div class="flex items-center gap-3">
+              <div class="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
+                <i data-lucide="weight" class="w-5 h-5"></i>
+              </div>
+              <span class="font-medium text-gray-700">Berat (Kg)</span>
+            </div>
+            <div class="text-right">
+              <span class="text-2xl font-bold text-emerald-600" x-text="formatNumber(totalKg())"></span>
+              <span class="text-sm font-medium text-gray-500 ml-1">kg</span>
+            </div>
+          </div>
+          <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-emerald-100/50">
+            <div class="flex items-center gap-3">
+              <div class="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
+                <i data-lucide="droplet" class="w-5 h-5"></i>
+              </div>
+              <span class="font-medium text-gray-700">Volume (Liter)</span>
+            </div>
+            <div class="text-right">
+              <span class="text-2xl font-bold text-emerald-600" x-text="formatNumber(totalLiter())"></span>
+              <span class="text-sm font-medium text-gray-500 ml-1">L</span>
+            </div>
+          </div>
+          <div x-show="opsiUangTunai === 'fixed' || (opsiUangTunai === 'manual' && hargaBeras > 0)"
+            x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            class="flex justify-between items-center bg-emerald-600 p-4 rounded-xl shadow-md text-white">
+            <div class="flex items-center gap-3">
+              <div class="p-2 bg-white/20 rounded-lg">
+                <i data-lucide="wallet" class="w-5 h-5"></i>
+              </div>
+              <div class="flex flex-col text-left">
+                <span class="font-medium">Uang Tunai</span>
+                <span class="text-[10px] sm:text-xs text-emerald-200"
+                  x-text="opsiUangTunai === 'fixed' ? '(Ketetapan Rp 45.000/jiwa)' : '(Sesuai Harga Beras)'"></span>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-sm font-medium mr-1">Rp</span>
+              <span class="text-2xl font-bold" x-text="formatRupiah(totalRupiah())"></span>
+            </div>
+          </div>
+        </div>
+        <div class="mt-6 bg-blue-50 text-blue-800 text-xs p-4 rounded-lg flex items-start gap-3 border border-blue-100">
+          <i data-lucide="info" class="w-4 h-4 mt-0.5 flex-shrink-0"></i>
+          <div>
+            <p class="font-semibold mb-1">Informasi Perhitungan:</p>
+            <ul class="list-disc list-inside space-y-1 opacity-90">
+              <li>1 Sho' = 2,75 Kg</li>
+              <li>1 Kg = 1,219512 Liter</li>
+              <li>Ketetapan Tunai Default = Rp 45.000/jiwa</li>
+            </ul>
+          </div>
         </div>
 
-        <!-- Alpine.js App -->
-        <div x-data="zakatCalculator()"
-            class="bg-white rounded-2xl shadow-xl border border-emerald-100 overflow-hidden">
-
-            <!-- Input Section -->
-            <div class="p-6 sm:p-8 bg-white space-y-6">
-
-                <!-- Jumlah Jiwa -->
-                <div>
-                    <label for="jumlahOrang"
-                        class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                        <i data-lucide="users" class="w-4 h-4 text-emerald-500"></i>
-                        Jumlah Anggota Keluarga (Jiwa)
-                    </label>
-                    <div class="relative">
-                        <button @click="if(jumlahOrang > 1) jumlahOrang--"
-                            class="absolute left-0 top-0 bottom-0 px-4 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-l-lg transition-colors border border-r-0 border-gray-300">
-                            <i data-lucide="minus" class="w-4 h-4"></i>
-                        </button>
-                        <input type="number" id="jumlahOrang" x-model.number="jumlahOrang" min="1"
-                            class="w-full text-center text-lg font-bold border border-gray-300 rounded-lg py-3 px-12 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none">
-                        <button @click="jumlahOrang++"
-                            class="absolute right-0 top-0 bottom-0 px-4 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-r-lg transition-colors border border-l-0 border-gray-300">
-                            <i data-lucide="plus" class="w-4 h-4"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Opsi Uang Tunai & Harga Beras -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                        <i data-lucide="coins" class="w-4 h-4 text-emerald-500"></i>
-                        Metode Konversi Uang Tunai
-                    </label>
-
-                    <div class="space-y-3">
-                        <!-- Radio Fixed -->
-                        <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-all"
-                            :class="opsiUangTunai === 'fixed' ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200 hover:bg-gray-50'">
-                            <input type="radio" x-model="opsiUangTunai" value="fixed"
-                                class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 border-gray-300">
-                            <span class="text-sm font-medium text-gray-700">Ketetapan Standar (Rp 45.000/jiwa)</span>
-                        </label>
-
-                        <!-- Radio Manual -->
-                        <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-all"
-                            :class="opsiUangTunai === 'manual' ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200 hover:bg-gray-50'">
-                            <input type="radio" x-model="opsiUangTunai" value="manual"
-                                class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 border-gray-300">
-                            <span class="text-sm font-medium text-gray-700">Hitung Manual (Harga Beras Saat Ini)</span>
-                        </label>
-                    </div>
-
-                    <!-- Input Harga Beras (muncul jika manual dipilih) -->
-                    <div x-show="opsiUangTunai === 'manual'" x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0 -translate-y-2"
-                        x-transition:enter-end="opacity-100 translate-y-0" class="mt-4 flex shadow-sm rounded-lg">
-                        <div class="relative flex-grow">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <span class="text-gray-500 font-medium">Rp</span>
-                            </div>
-                            <input type="number" id="hargaBeras" x-model.number="hargaBeras" min="0"
-                                placeholder="Contoh: 15000"
-                                class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none">
-                        </div>
-                        <select x-model="satuanHarga"
-                            class="bg-gray-50 border border-l-0 border-gray-300 text-gray-700 py-3 px-4 rounded-r-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all cursor-pointer">
-                            <option value="kg">per Kg</option>
-                            <option value="liter">per Liter</option>
-                        </select>
-                    </div>
-                    <p x-show="opsiUangTunai === 'manual'" class="text-xs text-gray-500 mt-2">* Kosongkan jika hanya
-                        ingin mengetahui takaran berat/volume.</p>
-                </div>
-
-            </div>
-
-            <!-- Results Section -->
-            <div class="bg-emerald-50/50 p-6 sm:p-8 border-t border-emerald-100">
-                <h3 class="text-sm font-bold text-emerald-800 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <i data-lucide="clipboard-check" class="w-4 h-4"></i>
-                    Total Kewajiban Zakat
-                </h3>
-
-                <div class="space-y-4">
-                    <!-- Hasil Kilogram -->
-                    <div
-                        class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-emerald-100/50">
-                        <div class="flex items-center gap-3">
-                            <div class="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
-                                <i data-lucide="weight" class="w-5 h-5"></i>
-                            </div>
-                            <span class="font-medium text-gray-700">Berat (Kg)</span>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-2xl font-bold text-emerald-600" x-text="formatNumber(totalKg())"></span>
-                            <span class="text-sm font-medium text-gray-500 ml-1">kg</span>
-                        </div>
-                    </div>
-
-                    <!-- Hasil Liter -->
-                    <div
-                        class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-emerald-100/50">
-                        <div class="flex items-center gap-3">
-                            <div class="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
-                                <i data-lucide="droplet" class="w-5 h-5"></i>
-                            </div>
-                            <span class="font-medium text-gray-700">Volume (Liter)</span>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-2xl font-bold text-emerald-600"
-                                x-text="formatNumber(totalLiter())"></span>
-                            <span class="text-sm font-medium text-gray-500 ml-1">L</span>
-                        </div>
-                    </div>
-
-                    <!-- Hasil Rupiah (Conditional) -->
-                    <div x-show="opsiUangTunai === 'fixed' || (opsiUangTunai === 'manual' && hargaBeras > 0)"
-                        x-transition:enter="transition ease-out duration-300"
-                        x-transition:enter-start="opacity-0 translate-y-2"
-                        x-transition:enter-end="opacity-100 translate-y-0"
-                        class="flex justify-between items-center bg-emerald-600 p-4 rounded-xl shadow-md text-white">
-                        <div class="flex items-center gap-3">
-                            <div class="p-2 bg-white/20 rounded-lg">
-                                <i data-lucide="wallet" class="w-5 h-5"></i>
-                            </div>
-                            <div class="flex flex-col text-left">
-                                <span class="font-medium">Uang Tunai</span>
-                                <span class="text-[10px] sm:text-xs text-emerald-200"
-                                    x-text="opsiUangTunai === 'fixed' ? '(Ketetapan Rp 45.000/jiwa)' : '(Sesuai Harga Beras)'"></span>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-sm font-medium mr-1">Rp</span>
-                            <span class="text-2xl font-bold" x-text="formatRupiah(totalRupiah())"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Info Note -->
-                <div
-                    class="mt-6 bg-blue-50 text-blue-800 text-xs p-4 rounded-lg flex items-start gap-3 border border-blue-100">
-                    <i data-lucide="info" class="w-4 h-4 mt-0.5 flex-shrink-0"></i>
-                    <div>
-                        <p class="font-semibold mb-1">Informasi Perhitungan:</p>
-                        <ul class="list-disc list-inside space-y-1 opacity-90">
-                            <li>1 Sho' = 2,75 Kg</li>
-                            <li>1 Kg = 1,219512 Liter</li>
-                            <li>Ketetapan Tunai Default = Rp 45.000/jiwa</li>
-                        </ul>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="text-center mt-8 text-sm text-gray-500">
-            Dibuat menggunakan Alpine.js & Tailwind CSS
-        </div>
+      </div>
     </div>
 
-    <script>
-        lucide.createIcons();
+    <div class="text-center mt-8 text-sm text-gray-500">
+      &copy; 2026 by <a href="https://github.com/lutfiadnan92">Adnan Lutfi</a>
+    </div>
+  </div>
 
-        function zakatCalculator() {
-            return {
-                jumlahOrang: 1,
-                opsiUangTunai: 'fixed', // 'fixed' atau 'manual'
-                hargaBeras: null,
-                satuanHarga: 'kg',
-                tarifFixed: 45000,
-
-                // Konstanta berdasarkan requirement
-                kgPerSok: 2.75,
-                literPerKg: 1.219512,
-
-                // Computed: Total Kg
-                totalKg() {
-                    return (this.jumlahOrang > 0 ? this.jumlahOrang : 0) * this.kgPerSok;
-                },
-
-                // Computed: Total Liter
-                totalLiter() {
-                    return this.totalKg() * this.literPerKg;
-                },
-
-                // Computed: Total Rupiah
-                totalRupiah() {
-                    if (this.opsiUangTunai === 'fixed') {
-                        return (this.jumlahOrang > 0 ? this.jumlahOrang : 0) * this.tarifFixed;
-                    } else {
-                        const harga = parseFloat(this.hargaBeras) || 0;
-                        if (this.satuanHarga === 'kg') {
-                            return this.totalKg() * harga;
-                        } else {
-                            return this.totalLiter() * harga;
-                        }
-                    }
-                },
-
-                // Helper: Format number with max 2 decimals
-                formatNumber(value) {
-                    if (value % 1 === 0) return value.toString();
-                    return value.toLocaleString('id-ID', {
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 2
-                    });
-                },
-
-                // Helper: Format Rupiah
-                formatRupiah(value) {
-                    return value.toLocaleString('id-ID', {
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 0
-                    });
-                },
-
-                // Watcher untuk memastikan jumlah orang tidak negatif
-                init() {
-                    this.$watch('jumlahOrang', value => {
-                        if (value < 1 && value !== '') {
-                            this.jumlahOrang = 1;
-                        }
-                    });
-                }
-            }
-        }
-
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        emerald: {
-                            50: '#ecfdf5',
-                            100: '#d1fae5',
-                            500: '#10b981',
-                            600: '#059669',
-                            700: '#047857',
-                            900: '#064e3b',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+  <script src="./index.js"></script>
 </body>
 
 </html>
