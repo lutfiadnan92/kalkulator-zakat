@@ -174,6 +174,21 @@
               </div>
             </div>
           </div>
+          <div
+            class="mt-6 bg-blue-50 text-sm text-blue-800 p-4 rounded-lg flex items-start gap-3 border border-blue-100">
+            <i data-lucide="info" class="w-4 h-4 mt-0.5 flex-shrink-0"></i>
+            <div>
+              <p class="font-semibold mb-1">Informasi Perhitungan:</p>
+              <ul class="list-disc list-inside space-y-1 opacity-90">
+                <li>1 Sho' = 2,75 Kg</li>
+                <li>1 Kg = 1,219512 Liter</li>
+                <li>
+                  Ketetapan tunai jika berupa uang = Rp
+                  <span x-text="formatRupiah(tarifFixed)"></span>/jiwa
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
       <div x-show="activeTab === 'distribusi'" x-transition:enter="transition ease-out duration-300"
